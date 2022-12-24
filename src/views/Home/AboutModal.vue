@@ -31,7 +31,7 @@
           </button>
         </div>
       </div>
-
+      <span class="font-extrabold text-xl" >Заголовок: {{modalData.title}}</span>
     </v-card-text>
 
     <v-divider></v-divider>

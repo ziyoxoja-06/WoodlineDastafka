@@ -14,34 +14,37 @@
       </v-card>
       <v-row class="ml-[3%] mr-[3%]">
         <v-col v-for="(item,i) in $store.getters['getDragAndDrop']" :key="i" cols="4">
-          <v-card class="min-h-[150px]">
+          <v-card class="min-h-[160px]">
             <v-card-title>
               {{ item.user_name }}
             </v-card-title>
-            <v-card-text class="flex">
-              <div class="w-[50%]">
-                <div v-for="(el,j) in item.deliveries[0]?.orders" :key="j">
+            <v-card-text class="">
+              <div class="flex">
+                <div class="w-[50%]">
+                  <div v-for="(el,j) in item.deliveries[0]?.orders" :key="j">
 
-                  <v-chip class="inline shadow-lg shadow-gray-600/10 ">
-                    {{ el?.order?.name }}
-                  </v-chip>
+                    <v-chip class="inline shadow-lg shadow-gray-600/10 ">
+                      {{ el?.order?.name }}
+                    </v-chip>
+                  </div>
+                </div>
+                <div class="w-[50%] flex items-center" :class="item.deliveries.length===0?'hidden':''">
+                    <v-icon color="error">mdi-map-marker</v-icon>
+                    {{ item.deliveries[0]?.from }}
+                    <v-icon class="mx-2" color="warning">mdi-truck-fast</v-icon>
+                    {{ item.deliveries[0]?.to }}
                 </div>
               </div>
-              <div class="w-[50%]">
-                <div :class="item.deliveries.length===0?'hidden':''" class="flex items-center">
-                  <v-icon color="error">mdi-map-marker</v-icon>
-                  {{ item.deliveries[0]?.from }}
-                  <v-icon class="mx-2" color="warning">mdi-truck-fast</v-icon>
-                  {{ item.deliveries[0]?.to }}
-                </div>
 
-              </div>
+              <div class="w-full flex mt-5" :class="item.deliveries.length===0?'hidden':''">
+                  <span class="mr-1">Заголовок: </span>{{item.deliveries[0]?.comment}}
+                </div>
 
             </v-card-text>
             <v-card-actions>
               <v-spacer/>
               <!--         Delivery Create Modal start    -->
-              <div :hidden="item?.deliveries?.length!==0">
+              <div :hidden="item?.deliveries?.length!==0" class="mt-7">
                 <delivery-give-to-user :items="item" @closeModal="close()"/>
               </div>
               <!--        Delivery Create Modal end      -->

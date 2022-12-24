@@ -10,7 +10,7 @@
           v-bind="attrs"
           v-on="on"
       >
-        Пустой
+        Доставка
       </v-btn>
     </template>
     <template >
@@ -86,7 +86,7 @@ export default {
       this.selectData=value
     },
     async callDatallData() {
-      let response = (await this.$axios.get('order')).data
+      let response = (await this.$axios.get('orders_to_deliver')).data
       this.tableDate= response
   },},
   mounted() {

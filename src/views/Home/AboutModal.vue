@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="text-h5  lighten-2">
-      Продукта: {{modalData.name}}
+      Заявка: {{modalData.name}}
     </v-card-title>
 
     <v-card-text>

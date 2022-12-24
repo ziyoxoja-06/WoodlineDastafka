@@ -22,12 +22,19 @@
           @item-selected="sendData"
 
           class="elevation-1"
-      />
+      >
+<!--         eslint-disable-next-line-->
+        <template v-slot:item.when_to="{ item }">
+        {{ formatDate(item.STRT_D) }}
+      </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import moment from "moment/moment";
+
 export default {
   name: "DeliveryTable",
   props:{
@@ -42,6 +49,10 @@ export default {
   methods:{
     sendData(){
       this.$emit('selected',this.selected)
+    },
+    formatDate(value) {
+      // eslint-disable-next-line
+      return  moment(value).format('DD[.]MM[.]YYYY')
     }
   },
   watch:{

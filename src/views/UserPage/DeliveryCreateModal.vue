@@ -6,11 +6,11 @@
           ref="form"
           v-model="valid"
           lazy-validation>
-        <v-text-field :rules="fromRules" prepend-icon="mdi-map-marker" dense outlined label="Место продукта" v-model="from"/>
-        <v-text-field :rules="whereRules" prepend-icon="mdi-truck-fast" dense outlined label="Oтправить место" v-model="where_to"/>
-        <v-text-field :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Oтправки дата"  v-model="when_to"  type="datetime-local"/>
+        <v-text-field :rules="fromRules" prepend-icon="mdi-map-marker" dense outlined label="Откуда (забрать)" v-model="from"/>
+        <v-text-field :rules="whereRules" prepend-icon="mdi-truck-fast" dense outlined label="Куда (отправить)" v-model="where_to"/>
+        <v-text-field :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="when_to"  type="datetime-local"/>
         <v-textarea :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="title"/>
-        <v-text-field :rules="balanceRules" prepend-icon="mdi-currency-usd" dense outlined label="Возьми деньги" v-model="balance"/>
+        <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-currency-usd" dense outlined label="Сумма за доставку" v-model="balance"/>
       </v-form>
       <v-chip v-for="(item,index) in $store.getters['getDeliveryData']" :key="index" class="white--text m-2" :class="`${color[Math.floor(Math.random() * 3)]}`">{{item.name}}</v-chip>
     </v-card-text>
@@ -61,6 +61,7 @@ export default {
     ],
     balanceRules: [
       v => !!v || 'Требуется деньги',
+      v => Number(v) || 'The value must be an integer number'
     ],
     openmodal:true,
     calendar:null,

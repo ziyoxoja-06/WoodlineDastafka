@@ -6,11 +6,11 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn
-          icon
+         color="warning"
           v-bind="attrs"
           v-on="on"
       >
-        <v-icon>mdi-plus</v-icon>
+        Заверщить доставка
       </v-btn>
     </template>
     <template >
@@ -19,7 +19,7 @@
         <v-toolbar
             color="primary"
             dark
-        >Завершить поставки
+        >Завершить доставка
         </v-toolbar>
         <v-card-title>
 
@@ -39,13 +39,12 @@
             </v-card-title>
             <v-card-text>
 
-                <v-text-field  class="form" :rules="balanceRules" prepend-icon="mdi-currency-usd" dense outlined label="Возьми деньги" v-model="formEl[`balance${i}`]"/>
+                <v-text-field  class="form" type="number" :rules="balanceRules" prepend-icon="mdi-currency-usd" dense outlined label="Возьми деньги" v-model="formEl[`balance${i}`]"/>
                 <v-textarea  class="form" :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="formEl[`title${i}`]"/>
-                <v-text-field  class="form" :disabled="((+el.order.balance===0)?true:+el.order.balance===(+formEl[`balance${i}`]))" :class="+el.order.balance===(+formEl[`balance${i}`])?'cursor-not-allowed':''" :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Oтправки дата"  v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
+                <v-text-field  class="form" :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
                 <v-checkbox
                     :disabled="((+el.order.balance===0)?false:+el.order.balance!==(+formEl[`balance${i}`]))"
-                    v-model="formEl[`complete${i}`]" class="ml-9" label="Завершить проект"/>
-              {{(+el.order.balance!==(+formEl[`balance${i}`]))&&(+el.order.balance!==0)}}{{((+el.order.balance===0)?false:+el.order.balance!==(+formEl[`balance${i}`]))}}
+                    v-model="formEl[`check${i}`]" class="ml-9" label="Завершить проект"/>
             </v-card-text>
             <v-card-actions>
               <v-spacer/>
@@ -101,6 +100,7 @@ export default {
     ],
     balanceRules: [
       v => !!v || 'Требуется деньги',
+      v => (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999999999) || 'The value must be an integer number'
     ],
     when_to:'',
     title: '',
@@ -125,6 +125,7 @@ export default {
      this.loader1 = 'loading'
      const l = this.loader1
      this[l] = !this[l]
+     console.log(el,'el',el.id)
       await this.$axios.put(`delivery/${el.id}`)
      setTimeout(()=>{
        this.$emit('closeModal')
@@ -144,17 +145,13 @@ export default {
       this.loader = 'loading'
       const l = this.loader
       this[l] = !this[l]
-      console.log(this.formEl[`form${0}`])
-      if (this.valid&&this.formEl[`title${i}`]!==undefined&&this.formEl[`balance${i}`]!==undefined) {
+      if (this.valid&&this.formEl[`title${i}`]!==undefined&&this.formEl[`balance${i}`]!==undefined&&this.formEl[`when_to${i}`]!==undefined) {
         const title=this.formEl[`title${i}`],
             payment=this.formEl[`balance${i}`],
-            complete=this.formEl[`complete${i}`],
             user=this.finishItem.user_id,
+            when_to = new Date(+this.formEl[`when_to${i}`]?.slice(0,4),this.formEl[`when_to${i}`].slice(5,7)-1,+this.formEl[`when_to${i}`].slice(8,10),+this.formEl[`when_to${i}`].slice(11,13),+this.formEl[`when_to${i}`].slice(14,16)+1).getTime(),
             delivery_order=el.id
-        console.log(new Date(+el.order.when_to.slice(0,4),el.order.when_to.slice(5,7)-1,+el.order.when_to.slice(8,10),+el.order.when_to.slice(11,13),+el.order.when_to.slice(14,16)+1),'time')
-        let when_to =this.formEl[`when_to${i}`]!==undefined?
-                new Date(+this.formEl[`when_to${i}`]?.slice(0,4),this.formEl[`when_to${i}`].slice(5,7)-1,+this.formEl[`when_to${i}`].slice(8,10),+this.formEl[`when_to${i}`].slice(11,13),+this.formEl[`when_to${i}`].slice(14,16)+1).getTime()
-                :new Date(+el.order.when_to.slice(0,4),el.order.when_to.slice(5,7)-1,+el.order.when_to.slice(8,10),+el.order.when_to.slice(11,13),+el.order.when_to.slice(14,16)+1).getTime()
+        let  complete=(await this.formEl[`check${i}`] !== undefined && await this.formEl[`check${i}`] !== null)
         try {
           console.log(payment,title,when_to,user,complete,delivery_order)
           await this.$axios.put(`order_deliver/${el.order.id}`,{payment,title,when_to,user,complete,delivery_order})

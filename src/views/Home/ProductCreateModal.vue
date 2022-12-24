@@ -11,11 +11,11 @@
           v-model="valid"
           lazy-validation>
         <v-text-field :rules="nameRules" prepend-icon="mdi-sofa" dense outlined label="Наименование модели" v-model="name" />
-        <v-text-field :rules="fromRules" prepend-icon="mdi-map-marker" dense outlined label="Место продукта" v-model="from"/>
-        <v-text-field :rules="whereRules" prepend-icon="mdi-truck-fast" dense outlined label="Oтправить место" v-model="where_to"/>
-        <v-text-field :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Oтправки дата"  v-model="when_to"  type="datetime-local"/>
+        <v-text-field :rules="fromRules" prepend-icon="mdi-map-marker" dense outlined label="Откуда (забрать)" v-model="from"/>
+        <v-text-field :rules="whereRules" prepend-icon="mdi-truck-fast" dense outlined label="Куда (отправить)" v-model="where_to"/>
+        <v-text-field :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="when_to"  type="datetime-local"/>
         <v-textarea :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="title"/>
-        <v-text-field :rules="balanceRules" prepend-icon="mdi-currency-usd" dense outlined label="Возьми деньги" v-model="balance"/>
+        <v-text-field :rules="balanceRules" prepend-icon="mdi-currency-usd" type="number" dense outlined label="Остаток" v-model="balance"/>
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-end text-white">
@@ -59,6 +59,7 @@ export default {
     ],
     balanceRules: [
       v => !!v || 'Требуется деньги',
+      v => Number(v) || 'The value must be an integer number'
     ],
     openmodal:true,
     calendar:null,

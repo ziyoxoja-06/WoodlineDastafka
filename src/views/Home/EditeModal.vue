@@ -4,7 +4,7 @@
         color="primary"
         dark
     >
-      Редактирование продукта
+      Редактирование заявки
     </v-toolbar>
     <v-card-text class="px-16 pt-5">
       <v-form

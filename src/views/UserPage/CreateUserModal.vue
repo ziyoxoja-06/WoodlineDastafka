@@ -26,7 +26,7 @@
               v-model="valid"
               lazy-validation>
             <v-text-field v-model="name" :rules="nameRules" dense label="Имя пользователя" outlined prepend-icon="mdi-account"/>
-            <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-phone" dense outlined label="Tелефонный номер" v-model="phone"/>
+            <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-phone" dense outlined label="Номер телефона" v-model="phone"/>
           </v-form>
         </v-card-text>
         <v-card-actions class="justify-end text-white">

@@ -59,7 +59,7 @@ export default {
     ],
     balanceRules: [
       v => !!v || 'Требуется деньги',
-      v => Number(v) || 'The value must be an integer number'
+      v => (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999999999) || 'The value must be an integer number'
     ],
     openmodal:true,
     calendar:null,

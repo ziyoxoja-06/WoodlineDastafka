@@ -97,7 +97,7 @@
                           </v-btn>
                         </template>
                         <template v-slot:default="dialog3">
-                          <edite-modal :modalData="project.order" @closeModal="funks(dialog3)"/>
+                          <edite-modal :modalData="project?.order" @closeModal="funks(dialog3)"/>
                         </template>
                       </v-dialog>
                       <!--        Edite Modal end      -->

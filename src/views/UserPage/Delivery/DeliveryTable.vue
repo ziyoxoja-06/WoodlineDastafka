@@ -14,7 +14,7 @@
       <v-data-table
           v-model="selected"
           :headers="header"
-          :items="tableDate"
+          :items="$store.getters['getUserData']"
           :search="searchData"
           item-key="name"
           single-expand

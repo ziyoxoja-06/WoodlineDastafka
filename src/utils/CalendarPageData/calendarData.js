@@ -38,7 +38,7 @@ export  const calendarDate ={
         },
         async handleDragStart(lane, dragResult, key, i) {
             this.calendar.monthNames.forEach((a,l)=>{
-                a===this.navKey?this.month= l+1:'';
+                a===this.navKey?this.month= l+1:' ';
 
             })
             const {payload, isSource} = dragResult

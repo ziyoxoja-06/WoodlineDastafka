@@ -6,11 +6,6 @@
         <div class="flex items-center   bg-[#ffc744]">
           <span class="text-xl ml-2">Банк</span>
           <v-spacer/>
-          <v-btn icon>
-            <v-badge color="red" content="6">
-              <v-icon>mdi-bell</v-icon>
-            </v-badge>
-          </v-btn>
           <!--         Create Modal start    -->
           <v-dialog
               max-width="700"
@@ -119,11 +114,20 @@ export default {
       index: -1,
       cardData: {},
     },
+    connection:'null',
     days: [{text: 'Сегодня', value: '', data: []},
       {text: 'Завтра', value: '', data: []},
       {text: 'Cледующий день', value: '', data: []}]
   }),
   components: {Container, Draggable, DropCard, ProductCreateModal, AboutModal ,EditeModal},
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    customEmit: function (data) {
+      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)',data)
+    }
+  },
   methods: {
     funk(item) {
       item.value = false
@@ -180,9 +184,17 @@ export default {
             el.value = date
             el.data = responData.data
           }
+
           this.$store.dispatch('setHomeDrag',this.days)
         })
       })
+      // console.log(this.connection)
+      // this.connection= await new WebSocket("http://localhost:7000")
+      // this.connection.onopen=function (event) {
+      //   console.log(event)
+      //   console.log("success")
+      // }
+      // console.log(this.connection)
     }
   },
   mounted() {

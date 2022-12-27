@@ -12,7 +12,7 @@
         <v-text-field class="w-36 font-weight-bold pl-2" :label="modalData.from_where" disabled outlined dense />
 
       </div>
-      <span class="font-extrabold  text-xl">Дата отправки: {{(modalData.when_to.toString().slice(0,10))}}</span>
+      <span class="font-extrabold  text-xl">Дата отправки: {{(modalData.when_to.replace(/T/, ' '). replace(/\..+/, ''))}}</span>
       <div class="pt-3 flex items-center" :hidden="modalData.is_completed" >
         <span class="font-extrabold text-xl" >Готовый: </span>
         <button

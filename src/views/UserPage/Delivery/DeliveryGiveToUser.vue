@@ -87,7 +87,8 @@ export default {
     },
     async callDatallData() {
       let response = (await this.$axios.get('orders_to_deliver')).data
-      this.tableDate= response
+     await this.$store.dispatch('setUserData',response)
+
   },},
   mounted() {
      this.callDatallData()

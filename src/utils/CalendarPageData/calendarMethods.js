@@ -13,7 +13,7 @@ export  const calendarMethods ={
             this.mainData = await this.$store.getters['getDragAndDrop']
         },
         async handleDragStart(lane, dragResult, key, i) {
-            this.calendar.monthNames.forEach((a,l)=>{
+            this.calendar?.monthNames.forEach((a,l)=>{
                 a===this.navKey?this.month= l+1:'';
 
             })
@@ -24,7 +24,7 @@ export  const calendarMethods ={
                     lane: lane,
                     index: payload.index,
                     cardData: {
-                        ...this.mainData?.data[key][i][lane][payload.index]
+                        ...this.mainData?.data[key][i][lane][payload?.index]
                     }
                 }
             }
@@ -71,7 +71,7 @@ export  const calendarMethods ={
                 try {
                     let date = new Date(+this.today, filterMonth-1, filterDay).getTime()
                     console.log(new Date(date), "uts")
-                    this.$axios.put(`/order/${this.draggingCard.cardData.order.id}`, {when_to:date,title:this.draggingCard.cardData.title})
+                    this.$axios.put(`/order/${this.draggingCard?.cardData?.order?.id}`, {when_to:date,title:this.draggingCard?.cardData?.title})
                     this.mainData = await this.$store.getters['getDragAndDrop']
 
                 } catch (err) {

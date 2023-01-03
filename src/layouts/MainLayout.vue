@@ -65,31 +65,78 @@
     </v-navigation-drawer>
     <v-main>
       <router-view :drawers="drawer" />
+      <v-dialog
+          v-model="sheet"
+          persistent
+          max-width="1000"
+      >
+        <web-socket-modal @closeModal="closeModal" :socketModal="socketMessage" />
+      </v-dialog>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import {itemsDrop,items} from './MainLayouData'
+import WebSocketModal from "@/components/WebSocketModal";
 export default {
   name: "MainLayout",
   data:()=>({
+    socketMessage:{},
+    sheet:false,
     itemsDrop,
     items,
     drawer:false,
     date:null,
     interval:null,
-    navarName:''
+    navarName:'',
+    socketConecting:true,
   }),
+  sockets: {
+    connect: function () {
+      console.log('socket Vuex connected')
+    },
+    customEmit: function (data) {
+
+      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)',data)
+    },
+    newMassage(data) {
+      if (this.sheet===false){
+        this.socketMessage = data
+      }
+
+    }
+
+  },
+  components:{WebSocketModal},
   methods:{
+    closeModal(){
+      this.sheet=false
+    },
     logout(){
       this.$router.push('/sign-in?message=logout')
     }
   },
   mounted() {
+    for (let i = 0; i < this.socketMessage.length; i++) {
+      this.formEl[`value${i}`]=true
+      this.formEl.push(
+          {
+            [`when_to${i}`]:'',
+            [`title${i}`]:'',
+            [`balance${i}`]:'',
+            [`check${i}`]:false,
+          }
+      )
+    }
     this.interval= setInterval(()=>{
       this.date = new Date()
     },1000)
+  },
+  watch:{
+    socketMessage(){
+      this.sheet=true
+    }
   },
   beforeDestroy() {
     clearTimeout(this.interval)

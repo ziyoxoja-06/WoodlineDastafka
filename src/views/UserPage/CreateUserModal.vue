@@ -10,7 +10,7 @@
           v-bind="attrs"
           v-on="on"
       >
-        <v-icon>mdi-plus</v-icon>
+        <v-icon>mdi-account-plus</v-icon>
       </v-btn>
     </template>
     <template>
@@ -26,7 +26,7 @@
               v-model="valid"
               lazy-validation>
             <v-text-field v-model="name" :rules="nameRules" dense label="Имя пользователя" outlined prepend-icon="mdi-account"/>
-            <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-phone" dense outlined label="Номер телефона" v-model="phone"/>
+            <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-phone" dense outlined label="Сумма за доставку" v-model="phone"/>
           </v-form>
         </v-card-text>
         <v-card-actions class="justify-end text-white">

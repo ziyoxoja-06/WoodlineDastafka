@@ -28,23 +28,24 @@
           <div  class="w-full z-50 flex  justify-center absolute">
             <v-alert class="text-center top-0 fixed" width="100%" v-if="alert.alertActive" :type="alert.alertType">{{alert.alertText}}</v-alert>
           </div>
-          <v-form
-              ref="form"
-              v-model="valid"
-              lazy-validation>
+
           <v-card class=" mb-5"  v-for="(el,i) in finishItem?.deliveries[0]?.orders" :key="i">
             <v-card-title>
               <h1 class="w-full">{{el.order.name}}</h1>
               <h1>Balance: {{el.order.balance}}</h1>
             </v-card-title>
             <v-card-text>
-
+              <v-form
+                  :ref="('form'+i)"
+                  v-model="valid"
+                  lazy-validation>
                 <v-text-field  class="form" type="number" :rules="balanceRules" prepend-icon="mdi-currency-usd" dense outlined label="Возьми деньги" v-model="formEl[`balance${i}`]"/>
                 <v-textarea  class="form" :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="formEl[`title${i}`]"/>
                 <v-text-field  class="form" :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
                 <v-checkbox
                     :disabled="((+el.order.balance===0)?false:+el.order.balance!==(+formEl[`balance${i}`]))"
                     v-model="formEl[`check${i}`]" class="ml-9" label="Завершить проект"/>
+              </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer/>
@@ -58,7 +59,7 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-          </v-form>
+
         </v-card-text>
         <v-card-actions class=" justify-end text-white">
           <v-btn color="warning"
@@ -129,23 +130,28 @@ export default {
       await this.$axios.put(`delivery/${el.id}`)
      setTimeout(()=>{
        this.$emit('closeModal')
-       this.$refs.form.reset()
        this.alert.alertActive=false
        this[l] = false
      },2000)
      this.loader = null
     },
-    cleareBtn(){
+    cleareBtn(i){
       this.loader = 'loading'
       const l = this.loader
       this[l] = !this[l]
-      this.$refs.form.reset()
+      setTimeout(()=>{
+        console.log(this.$refs,'log')
+        this.$refs[('form'+i)][0].reset()
+        this.alert.alertActive=false
+        this[l] = false
+      },2000)
+      this.loader = null
     },
     async submitFunk(i,el){
       this.loader = 'loading'
       const l = this.loader
       this[l] = !this[l]
-      if (this.valid&&this.formEl[`title${i}`]!==undefined&&this.formEl[`balance${i}`]!==undefined&&this.formEl[`when_to${i}`]!==undefined) {
+      if (this.$refs[('form'+i)][0].validate()) {
         const title=this.formEl[`title${i}`],
             payment=this.formEl[`balance${i}`],
             user=this.finishItem.user_id,
@@ -160,7 +166,7 @@ export default {
           this.alert.alertActive=true
           setTimeout(()=>{
             this.$emit('closeModal')
-            this.$refs.form.reset()
+            this.$refs[('form'+i)][0].reset()
             this.alert.alertActive=false
             this[l] = false
           },2000)

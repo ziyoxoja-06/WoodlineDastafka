@@ -25,7 +25,6 @@
             </template>
           </v-dialog>
           <!--        Create Modal end      -->
-
         </div>
       </v-card>
       <div class="flex justify-center">
@@ -44,10 +43,9 @@
 
           >
             <draggable v-for="(item,j) in day.data" :key="j">
-              <drop-card class="bg-pink-500">
-                <span class="ml-3">{{ item.name }}</span>
+              <drop-card  :class="(new Date(item.when_to).getTime()-(new Date().getTime()))<7200000?'bg-pink-500':(new Date(item.when_to).getTime()-(new Date().getTime()))<14400000?'bg-yellow-400':'bg-green-500'" >
+                <span class="ml-3">{{ item.name }} {{socketMessage}}</span>
                 <v-spacer/>
-
                 <!--         About Modal start    -->
                 <v-dialog
                     max-width="600"
@@ -58,6 +56,7 @@
                         icon
                         v-bind="attrs"
                         v-on="on"
+
                     >
                       <v-icon color="white" small> mdi-clipboard-text</v-icon>
                     </v-btn>
@@ -82,6 +81,7 @@
                     </v-btn>
                   </template>
                   <template v-slot:default="dialog3">
+
                     <edite-modal :modalData="item" @closeModal="funk(dialog3)"/>
                   </template>
                 </v-dialog>
@@ -107,6 +107,7 @@ export default {
   // eslint-disable-next-line
   name: 'Home',
   data: () => ({
+    socketMessage:"null",
     draggingCard: [],
     todayDay: '',
     dragingCard: {
@@ -114,19 +115,27 @@ export default {
       index: -1,
       cardData: {},
     },
+    socket: {},
+    context: {},
     connection:'null',
     days: [{text: 'Сегодня', value: '', data: []},
       {text: 'Завтра', value: '', data: []},
-      {text: 'Cледующий день', value: '', data: []}]
+      {text: 'Cледующий день', value: '', data: []}],
   }),
   components: {Container, Draggable, DropCard, ProductCreateModal, AboutModal ,EditeModal},
   sockets: {
     connect: function () {
-      console.log('socket connected')
+      console.log('socket Vuex connected')
     },
     customEmit: function (data) {
+
       console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)',data)
+    },
+    newMassage(data) {
+      console.log(data,'lllll')
+      this.socketMessage = data
     }
+
   },
   methods: {
     funk(item) {
@@ -160,6 +169,7 @@ export default {
           title: this.draggingCard.cardData.title
         })
       }
+
      await this.callData()
     },
     getChildPayload(index) {
@@ -175,8 +185,8 @@ export default {
       let year = (new Date().getFullYear()),
           month = new Date().getMonth(),
           day = new Date().getDate()
-      await this.days.forEach((el, i) => {
 
+      await this.days.forEach((el, i) => {
         let date = new Date(year, month, day + i).getTime()
         let responseDatas = this.dataPromise(`order/${date}`)
         responseDatas.then((responData) => {
@@ -188,15 +198,10 @@ export default {
           this.$store.dispatch('setHomeDrag',this.days)
         })
       })
-      // console.log(this.connection)
-      // this.connection= await new WebSocket("http://localhost:7000")
-      // this.connection.onopen=function (event) {
-      //   console.log(event)
-      //   console.log("success")
-      // }
-      // console.log(this.connection)
+
     }
   },
+
   mounted() {
     this.callData()
   },

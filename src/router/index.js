@@ -19,7 +19,7 @@ const routes = [
   },
   {
     path: '/supplier',
-    name: 'UserPage',
+    name: 'DeliveryMainPage',
     meta:{layout:'main', auth:true},
     component: UserPage
   },

@@ -9,6 +9,8 @@
           color="info"
           v-bind="attrs"
           v-on="on"
+          :disabled="items.telegram_id===null"
+          @click="openModal"
       >
         Доставка
       </v-btn>
@@ -22,7 +24,7 @@
           <v-btn
               icon
               dark
-              @click="dialog=false"
+              @click="close(dialog=false)"
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -34,7 +36,7 @@
         </v-toolbar>
         <div class="w-full flex bg-green-200">
           <div class="w-[50%] h-full">
-            <delivery-table @selected="selected" :header="headers" :tableDate="tableDate" />
+            <delivery-table @selected="selected" :header="headers" :items="items" :tableDate="tableDate" />
           </div>
           <div class="w-[50%] h-[100%] flex align-center">
             <div class="w-full h-[90vh]">
@@ -51,7 +53,7 @@
 
 <script>
 import DeliveryTable from "@/views/UserPage/Delivery/DeliveryTable";
-import DeliveryCreateModal from "@/views/UserPage/DeliveryCreateModal";
+import DeliveryCreateModal from "@/views/UserPage/Delivery/DeliveryCreateModal";
 export default {
   name: "DeliveryGiveToUser",
   components: {DeliveryTable,DeliveryCreateModal},
@@ -76,14 +78,18 @@ export default {
     tableDate:[]
   }),
   methods:{
-    close(){
+   async close(){
       this.selectData=[]
       this.dialog=false
+      await this.$store.dispatch('setDeliveryData',[])
       this.$emit('closeModal')
     },
     selected(value){
 
       this.selectData=value
+    },
+    openModal(){
+     this.callDatallData()
     },
     async callDatallData() {
       let response = (await this.$axios.get('orders_to_deliver')).data

@@ -16,8 +16,7 @@
           :headers="header"
           :items="$store.getters['getUserData']"
           :search="searchData"
-          item-key="name"
-          single-expand
+          :single-select="items?.deliveries?.length!==0"
           show-select
           @item-selected="sendData"
 
@@ -40,6 +39,7 @@ export default {
   props:{
     header:{namespaced:true},
     tableDate:{namespaced:true},
+    items:{namespaced:true},
   },
   data:()=>({
     searchData:'',
@@ -57,6 +57,10 @@ export default {
   },
   watch:{
     selected(){
+      this.$store.dispatch('setDeliveryData',this.selected)
+    },
+    tableDate(){
+      this.selected=[]
       this.$store.dispatch('setDeliveryData',this.selected)
     }
   }

@@ -109,7 +109,10 @@ methods:{
           console.log(e)
         }
       }else {
-        this.from=''; this.where_to=''; this.when_to=''; this.title=''; this.balance=''
+        setTimeout(()=>{
+          this[l] = false
+        },2000)
+        this.loader = null
       }
     }
 },

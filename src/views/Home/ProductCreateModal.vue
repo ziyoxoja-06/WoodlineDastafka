@@ -13,7 +13,7 @@
         <v-text-field :rules="nameRules" prepend-icon="mdi-sofa" dense outlined label="Наименование модели" v-model="name" />
         <v-text-field :rules="fromRules" prepend-icon="mdi-map-marker" dense outlined label="Откуда (забрать)" v-model="from"/>
         <v-text-field :rules="whereRules" prepend-icon="mdi-truck-fast" dense outlined label="Куда (отправить)" v-model="where_to"/>
-        <v-text-field :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="when_to"  type="datetime-local"/>
+        <v-text-field :min="toDay" :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="when_to"  type="datetime-local"/>
         <v-textarea :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="title"/>
         <v-text-field :rules="balanceRules" prepend-icon="mdi-currency-usd" type="number" dense outlined label="Остаток" v-model="balance"/>
       </v-form>
@@ -71,6 +71,20 @@ export default {
     balance:'',
     alert:false,
   }),
+  computed:{
+    // eslint-disable-next-line vue/return-in-computed-property
+    toDay: function () {
+      var today = new Date(),
+          dd = String(today.getDate()).padStart(2, '0'),
+          mm = String(today.getMonth() + 1).padStart(2, '0'), //January is 0!
+          yyyy = today.getFullYear(),
+          hour= today.getHours(),
+          minut=today.getMinutes()
+
+
+      return yyyy + '-' + mm + '-' + dd +'T'+hour+':'+minut;
+    }
+  },
 methods:{
     resets() {
       this.loader = 'loading'

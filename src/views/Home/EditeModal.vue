@@ -14,7 +14,7 @@
           <div class="flex">
         <v-text-field  class="w-[50%]" prepend-icon="mdi-clipboard-text-clock" dense outlined :label="modalData?.when_to.replace(/T/, ' '). replace(/\..+/, '')" disabled/>
           <v-icon color="red " class="mb-8">mdi-swap-horizontal</v-icon>
-        <v-text-field :rules="whenRules" class="w-[50%]" dense outlined label="Новая дата отправки"  v-model="when_to"  type="datetime-local"/>
+        <v-text-field  :rules="whenRules" class="w-[50%]" dense outlined label="Новая дата отправки"  v-model="when_to"  type="datetime-local" :min="toDay"/>
           </div>
 
         <v-text-field :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="title"/>
@@ -61,9 +61,20 @@ export default {
     title: '',
     alert:false,
   }),
-  filters:{
+computed:{
+  // eslint-disable-next-line vue/return-in-computed-property
+  toDay: function () {
+    var today = new Date(),
+     dd = String(today.getDate()).padStart(2, '0'),
+     mm = String(today.getMonth() + 1).padStart(2, '0'), //January is 0!
+     yyyy = today.getFullYear(),
+     hour= today.getHours(),
+     minut=today.getMinutes()
 
-  },
+
+    return yyyy + '-' + mm + '-' + dd +'T'+hour+':'+minut;
+  }
+},
   methods:{
     async submitFunk(){
       this.loader = 'loading'

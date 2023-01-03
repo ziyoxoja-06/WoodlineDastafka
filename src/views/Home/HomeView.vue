@@ -44,7 +44,7 @@
           >
             <draggable v-for="(item,j) in day.data" :key="j">
               <drop-card  :class="(new Date(item.when_to).getTime()-(new Date().getTime()))<7200000?'bg-pink-500':(new Date(item.when_to).getTime()-(new Date().getTime()))<14400000?'bg-yellow-400':'bg-green-500'" >
-                <span class="ml-3">{{ item.name }} {{socketMessage}}</span>
+                <span class="ml-3">{{ item.name }}</span>
                 <v-spacer/>
                 <!--         About Modal start    -->
                 <v-dialog
@@ -132,7 +132,6 @@ export default {
       console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)',data)
     },
     newMassage(data) {
-      console.log(data,'lllll')
       this.socketMessage = data
     }
 

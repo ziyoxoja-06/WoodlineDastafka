@@ -70,7 +70,7 @@
           persistent
           max-width="1000"
       >
-        <web-socket-modal @closeModal="closeModal" :socketModal="socketMessage" />
+        <web-socket-modal @removeItem="removeItem" @closeModal="closeModal" :socketModal="socketMessage" />
       </v-dialog>
     </v-main>
   </v-app>
@@ -79,10 +79,11 @@
 <script>
 import {itemsDrop,items} from './MainLayouData'
 import WebSocketModal from "@/components/WebSocketModal";
+// import HomeView from "@/views/Home/HomeView";
 export default {
   name: "MainLayout",
   data:()=>({
-    socketMessage:{},
+    socketMessage:[],
     sheet:false,
     itemsDrop,
     items,
@@ -100,8 +101,9 @@ export default {
 
       console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)',data)
     },
-    newMassage(data) {
+    newMessage(data) {
       if (this.sheet===false){
+        console.log(data,'Socket Data')
         this.socketMessage = data
       }
 
@@ -110,28 +112,52 @@ export default {
   },
   components:{WebSocketModal},
   methods:{
+   async removeItem(index){
+     if (this.socketMessage.length!==1){
+       this.socketMessage.splice(index,1)
+       await this.getData()
+     }
+     this.days= await this.$store.getters['getHomeDrag']
+     let year = (new Date().getFullYear()),
+         month = new Date().getMonth(),
+         day = new Date().getDate()
+
+     await this.days.forEach((el, i) => {
+       let date = new Date(year, month, day + i).getTime()
+       let responseDatas = this.dataPromise(`order/${date}`)
+       responseDatas.then((responData) => {
+         if (responData.status === 200) {
+           el.value = date
+           el.data = responData.data
+         }
+         this.$store.dispatch('setHomeDrag',this.days)
+       })
+     })
+    },
     closeModal(){
       this.sheet=false
     },
     logout(){
       this.$router.push('/sign-in?message=logout')
+    },
+    getData(){
+      for (let i = 0; i < this.socketMessage.length; i++) {
+        this.formEl.push(
+            {
+              [`when_to${i}`]:'',
+              [`title${i}`]:'',
+              [`balance${i}`]:'',
+              [`check${i}`]:false,
+            }
+        )
+      }
+      this.interval= setInterval(()=>{
+        this.date = new Date()
+      },1000)
     }
   },
   mounted() {
-    for (let i = 0; i < this.socketMessage.length; i++) {
-      this.formEl[`value${i}`]=true
-      this.formEl.push(
-          {
-            [`when_to${i}`]:'',
-            [`title${i}`]:'',
-            [`balance${i}`]:'',
-            [`check${i}`]:false,
-          }
-      )
-    }
-    this.interval= setInterval(()=>{
-      this.date = new Date()
-    },1000)
+    this.getData()
   },
   watch:{
     socketMessage(){

@@ -19,7 +19,9 @@
 
             <v-card-title>
               <h1 class="w-full">{{el?.name}}</h1>
-              <h1>Balance: {{el?.balance}}</h1>
+              <h1 class="w-full">Остаток: {{el?.balance}}</h1>
+              <h1>Заголовок: {{el?.title}}</h1>
+
             </v-card-title>
             <v-card-text>
               <v-form
@@ -29,7 +31,7 @@
               <div class="flex">
                 <v-text-field  class="w-[50%]" prepend-icon="mdi-clipboard-text-clock" dense outlined :label="el.when_to|moment" disabled/>
                 <v-icon color="red " class="mb-8">mdi-swap-horizontal</v-icon>
-                <v-text-field :rules="whenRules" class="w-[50%]" dense outlined label="Новая дата отправки"   v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
+                <v-text-field :min="toDay" :rules="whenRules" class="w-[50%]" dense outlined label="Новая дата отправки"   v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
               </div>
               <v-text-field :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок"  v-model="formEl[`title${i}`]"/>
               </v-form>
@@ -85,6 +87,20 @@ export default {
       return moment(date).format('DD[.]MM[.]YYYY');
     }
   },
+  computed:{
+    // eslint-disable-next-line vue/return-in-computed-property
+    toDay: function () {
+      var today = new Date(),
+          dd = String(today.getDate()).padStart(2, '0'),
+          mm = String(today.getMonth() + 1).padStart(2, '0'), //January is 0!
+          yyyy = today.getFullYear(),
+          hour= today.getHours(),
+          minut=today.getMinutes()
+
+
+      return yyyy + '-' + mm + '-' + dd +'T'+hour+':'+minut;
+    }
+  },
   methods:{
     cleareBtn(i){
      this.loader = 'loading'
@@ -107,18 +123,15 @@ export default {
             title=this.title
         console.log(when_to,title)
         try {
-          // await this.$axios.put(`order/${this.modalData.id}`,{when_to,title})
-
           setTimeout(()=>{
-            console.log(this.socketModal,'SocketModal')
-            if (this.socketModal.length===1){
-               this.$axios.put(`order/${this.socketModal[i].id}`,{when_to,title})
+            if (this.socketModal?.length===1){
               this.$emit('closeModal')
+               this.$axios.put(`order/${this.socketModal[i]?.id}`,{when_to,title})
               console.log((new Date(when_to)),title,'Axios')
             }else {
-               this.$axios.put(`order/${this.socketModal[i].id}`,{when_to,title})
+               this.$axios.put(`order/${this.socketModal[i]?.id}`,{when_to,title})
             }
-
+            this.$emit("removeItem",i)
             this.alert=false
             this[l] = false
           },2000)

@@ -41,7 +41,7 @@
                   lazy-validation>
                 <v-text-field  class="form" type="number" :rules="balanceRules" prepend-icon="mdi-currency-usd" dense outlined label="Возьми деньги" v-model="formEl[`balance${i}`]"/>
                 <v-textarea  class="form" :rules="titleRules" prepend-icon="mdi-clipboard-text" dense outlined label="Заголовок" v-model="formEl[`title${i}`]"/>
-                <v-text-field  class="form" :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
+                <v-text-field :min="toDay" class="form" :rules="whenRules" prepend-icon="mdi-clipboard-text-clock" dense outlined label="Дата отправки"  v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
                 <v-checkbox
                     :disabled="((+el.order.balance===0)?false:+el.order.balance!==(+formEl[`balance${i}`]))"
                     v-model="formEl[`check${i}`]" class="ml-9" label="Завершить проект"/>
@@ -108,6 +108,20 @@ export default {
     balance:'',
     formEl:[]
   }),
+  computed:{
+    // eslint-disable-next-line vue/return-in-computed-property
+    toDay: function () {
+      var today = new Date(),
+          dd = String(today.getDate()).padStart(2, '0'),
+          mm = String(today.getMonth() + 1).padStart(2, '0'), //January is 0!
+          yyyy = today.getFullYear(),
+          hour= today.getHours(),
+          minut=today.getMinutes()
+
+
+      return yyyy + '-' + mm + '-' + dd +'T'+hour+':'+minut;
+    }
+  },
   mounted() {
     for (let i = 0; i < this.finishItem.deliveries[0].orders.length; i++) {
       this.formEl[`value${i}`]=true

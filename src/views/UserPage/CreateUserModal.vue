@@ -26,7 +26,7 @@
               v-model="valid"
               lazy-validation>
             <v-text-field v-model="name" :rules="nameRules" dense label="Имя пользователя" outlined prepend-icon="mdi-account"/>
-            <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-phone" dense outlined label="Сумма за доставку" v-model="phone"/>
+            <v-text-field :rules="balanceRules" type="number" prepend-icon="mdi-phone" dense outlined label="Телефонный номер" v-model="phone"/>
           </v-form>
         </v-card-text>
         <v-card-actions class="justify-end text-white">
@@ -62,7 +62,7 @@ export default {
       v => !!v || 'Требуется name',
     ],
     balanceRules: [
-      v => !!v || 'Требуется деньги',
+      v => !!v || 'Требуется tелефонный номер',
       v => (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999999999) || 'The value must be an integer number'
     ],
     openmodal: true,

@@ -29,7 +29,7 @@
                   v-model="valid"
                   lazy-validation>
               <div class="flex">
-                <v-text-field  class="w-[50%]" prepend-icon="mdi-clipboard-text-clock" dense outlined :label="el.when_to|moment" disabled/>
+                <v-text-field  class="w-[50%]" prepend-icon="mdi-clipboard-text-clock" dense outlined :label="el.when_to | momentFilter" disabled/>
                 <v-icon color="red " class="mb-8">mdi-swap-horizontal</v-icon>
                 <v-text-field :min="toDay" :rules="whenRules" class="w-[50%]" dense outlined label="Новая дата отправки"   v-model="formEl[`when_to${i}`]"  type="datetime-local"/>
               </div>
@@ -55,7 +55,9 @@
 </template>
 
 <script>
-import moment from "moment/moment";
+import * as moment from "moment/moment";
+import "moment/locale/ru"
+moment.locale('ru')
 export default {
   name: "WebSocketModal",
   // eslint-disable-next-line vue/no-unused-components
@@ -86,8 +88,8 @@ export default {
       {text: 'Cледующий день', value: '', data: []}],
   }),
   filters: {
-    moment: function (date) {
-      return moment(date).format('DD[.]MM[.]YYYY h:mm:ss ');
+    momentFilter: function (date) {
+      return moment(date).format('LLL');
     }
   },
   computed:{

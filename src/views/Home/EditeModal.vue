@@ -12,7 +12,7 @@
           v-model="valid"
           lazy-validation>
           <div class="flex">
-        <v-text-field  class="w-[50%]" prepend-icon="mdi-clipboard-text-clock" dense outlined :label="modalData?.when_to.replace(/T/, ' '). replace(/\..+/, '')" disabled/>
+        <v-text-field  class="w-[50%]" prepend-icon="mdi-clipboard-text-clock" dense outlined :label="modalData?.when_to | momentFilter " disabled/>
           <v-icon color="red " class="mb-8">mdi-swap-horizontal</v-icon>
         <v-text-field  :rules="whenRules" class="w-[50%]" dense outlined label="Новая дата отправки"  v-model="when_to"  type="datetime-local" :min="toDay"/>
           </div>
@@ -38,6 +38,9 @@
 </template>
 
 <script>
+import * as moment from "moment/moment";
+import "moment/locale/ru"
+moment.locale('ru')
 export default {
   name: "EditeModal",
   props:{
@@ -61,6 +64,11 @@ export default {
     title: '',
     alert:false,
   }),
+  filters: {
+    momentFilter: function (date) {
+      return moment(date).format('LLL');
+    }
+  },
 computed:{
   // eslint-disable-next-line vue/return-in-computed-property
   toDay: function () {
@@ -86,7 +94,6 @@ computed:{
         console.log(when_to)
         try {
           await this.$axios.put(`order/${this.modalData.id}`,{when_to,title})
-
           setTimeout(()=>{
             this.$emit('closeModal')
             this.alert=false

@@ -12,7 +12,7 @@
         <v-text-field class="w-36 font-weight-bold pl-2" :label="modalData.from_where" disabled outlined dense />
 
       </div>
-      <span class="font-extrabold  text-xl">Дата отправки: {{(modalData.when_to.replace(/T/, ' '). replace(/\..+/, ''))}}</span>
+      <span class="font-extrabold  text-xl">Дата отправки: {{modalData?.when_to | momentFilter}}</span>
       <div class="pt-3 flex items-center" :hidden="modalData.is_completed" >
         <span class="font-extrabold text-xl" >Готовый: </span>
         <button
@@ -50,6 +50,9 @@
 </template>
 
 <script>
+import * as moment from "moment/moment";
+import "moment/locale/ru"
+moment.locale('ru')
 export default {
   name: "AboutModal",
   props:{
@@ -57,10 +60,19 @@ export default {
       namespaced:true
     }
   },
+  filters: {
+    momentFilter: function (date) {
+      return moment(date).format('LLL');
+    }
+  },
   methods:{
     closeModal(){
+
       this.$emit('closeModal')
     }
+  },
+  beforeCreate() {
+    console.log(moment(new Date()).format('LLL'),'Date')
   }
 }
 </script>

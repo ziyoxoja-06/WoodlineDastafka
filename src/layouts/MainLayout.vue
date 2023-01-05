@@ -112,6 +112,9 @@ export default {
   },
   components:{WebSocketModal},
   methods:{
+    async dataPromise(data) {
+      return await this.$axios.get(data)
+    },
    async removeItem(index){
      if (this.socketMessage.length!==1){
        this.socketMessage.splice(index,1)

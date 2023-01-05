@@ -120,7 +120,6 @@ export default {
         })
         console.log(message,user,price,when_to,from,to,comment,orderss)
         try {
-          // await this.$axios.post('delivery_with_orders',{user,price,when_to,from,to,comment,orderss})
           if (this.items.deliveries.length===0) {
             await this.$axios.post('delivery_with_orders',{user,price,when_to,from,to,comment,orderss})
             setTimeout(()=>{
@@ -142,7 +141,7 @@ export default {
               this[l] = false
             },1000)
           }
-
+          this.$emit('closeModal')
          await this.$store.dispatch('setDeliveryData',[])
           let response = (await this.$axios.get('orders_to_deliver')).data
           await this.$store.dispatch('setUserData',response)

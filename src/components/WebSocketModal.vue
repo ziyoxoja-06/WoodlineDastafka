@@ -81,10 +81,13 @@ export default {
     when_to:'',
     title: '',
     alert:false,
+    days: [{text: 'Сегодня', value: '', data: []},
+      {text: 'Завтра', value: '', data: []},
+      {text: 'Cледующий день', value: '', data: []}],
   }),
   filters: {
     moment: function (date) {
-      return moment(date).format('DD[.]MM[.]YYYY');
+      return moment(date).format('DD[.]MM[.]YYYY h:mm:ss ');
     }
   },
   computed:{
@@ -102,6 +105,30 @@ export default {
     }
   },
   methods:{
+    async dataPromise(data) {
+      return await this.$axios.get(data)
+    },
+    async callData() {
+      this.days= [{text: 'Сегодня', value: '', data: []},
+        {text: 'Завтра', value: '', data: []},
+        {text: 'Cледующий день', value: '', data: []}]
+      let year = (new Date().getFullYear()),
+          month = new Date().getMonth(),
+          day = new Date().getDate()
+
+      await this.days.forEach((el, i) => {
+        let date = new Date(year, month, day + i).getTime()
+        let responseDatas = this.dataPromise(`order/${date}`)
+        responseDatas.then((responData) => {
+          if (responData.status === 200) {
+            el.value = date
+            el.data = responData.data
+          }
+        })
+        this.$store.dispatch('setHomeDrag',this.days)
+      })
+
+    },
     cleareBtn(i){
      this.loader = 'loading'
      const l = this.loader
@@ -120,17 +147,18 @@ export default {
       if (this.$refs[('form'+i)][0].validate()) {
         // console.log(+this.formEl[`when_to${i}`].slice(0,4),this.formEl[`when_to${i}`].slice(5,7)-1,+this.formEl[`when_to${i}`].slice(8,10),+this.formEl[`when_to${i}`].slice(11,13),+this.formEl[`when_to${i}`].slice(14,16),'lll')
         const when_to=new Date(+this.formEl[`when_to${i}`].slice(0,4),this.formEl[`when_to${i}`].slice(5,7)-1,+this.formEl[`when_to${i}`].slice(8,10),+this.formEl[`when_to${i}`].slice(11,13),+this.formEl[`when_to${i}`].slice(14,16)).getTime(),
-            title=this.title
-        console.log(when_to,title)
+            title=this.formEl[`title${i}`]
         try {
           setTimeout(()=>{
             if (this.socketModal?.length===1){
               this.$emit('closeModal')
-               this.$axios.put(`order/${this.socketModal[i]?.id}`,{when_to,title})
-              console.log((new Date(when_to)),title,'Axios')
+              this.$axios.put(`order/${this.socketModal[i]?.id}`,{when_to,title})
+              this.callData()
             }else {
                this.$axios.put(`order/${this.socketModal[i]?.id}`,{when_to,title})
+              this.callData()
             }
+            this.callData()
             this.$emit("removeItem",i)
             this.alert=false
             this[l] = false
@@ -156,7 +184,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

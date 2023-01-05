@@ -28,7 +28,7 @@
         </div>
       </v-card>
       <div class="flex justify-center">
-        <v-card v-for="(day,i) in days" :key="i" class="card h-fit w-[30%] mx-1 ">
+        <v-card v-for="(day,i) in $store.getters['getHomeDrag']" :key="i" class="card h-fit w-[30%] mx-1 ">
           <v-card-title>
             {{ day.text }}
           </v-card-title>
@@ -167,6 +167,7 @@ export default {
           when_to: data,
           title: this.draggingCard.cardData.title
         })
+       await this.$store.dispatch('setHomeDrag',this.days)
       }
 
      await this.callData()
@@ -184,7 +185,6 @@ export default {
       let year = (new Date().getFullYear()),
           month = new Date().getMonth(),
           day = new Date().getDate()
-
       await this.days.forEach((el, i) => {
         let date = new Date(year, month, day + i).getTime()
         let responseDatas = this.dataPromise(`order/${date}`)
